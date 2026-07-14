@@ -1,0 +1,195 @@
+:root {
+    --splash-duration: 5000ms;
+    --purple: #c04cff;
+    --purple-bright: #f4b4ff;
+    --black: #000;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--black);
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    color: #fff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+}
+
+.splash-stage {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: #000;
+}
+
+/* Keeps every overlay locked to the exact 711 × 1536 source-image position. */
+.poster {
+    position: relative;
+    width: 100vw;
+    height: calc(100vw * 2.16033755);
+    max-width: calc(100vh * 0.462890625);
+    max-width: calc(100dvh * 0.462890625);
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden;
+    background: #000;
+}
+
+.poster__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: fill;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.988);
+    filter: saturate(1.02) contrast(1.025);
+}
+
+body.is-running .poster__image {
+    animation: poster-reveal 850ms cubic-bezier(0.2, 0.72, 0.2, 1) forwards;
+}
+
+/* Black mask erases the old/static line baked into the supplied image. */
+.progress-mask {
+    position: absolute;
+    z-index: 2;
+    left: 26.5%;
+    top: 82.75%;
+    width: 47%;
+    height: 4.8%;
+    display: flex;
+    align-items: center;
+    padding-inline: 4.3%;
+    background: #000;
+}
+
+.progress-track {
+    position: relative;
+    width: 100%;
+    height: clamp(2px, 0.29vw, 3px);
+    overflow: visible;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #08070a, #17101c 50%, #09080b);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.progress-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: linear-gradient(
+        90deg,
+        #8d20cf 0%,
+        var(--purple) 55%,
+        var(--purple-bright) 86%,
+        #ffffff 100%
+    );
+    box-shadow:
+        0 0 5px rgba(203, 74, 255, 0.95),
+        0 0 12px rgba(190, 57, 255, 0.62),
+        0 0 22px rgba(171, 40, 255, 0.32);
+    will-change: transform;
+}
+
+body.is-running .progress-fill {
+    animation: load-progress var(--splash-duration) linear forwards;
+}
+
+.progress-glow {
+    position: absolute;
+    top: 50%;
+    right: -2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+        0 0 6px #fff,
+        0 0 13px #e898ff,
+        0 0 24px #bc3cff;
+    transform: translateY(-50%);
+}
+
+.end-screen {
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: #000;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 620ms ease,
+        visibility 0s linear 620ms;
+}
+
+.end-screen__text {
+    margin: 0;
+    color: #f7effa;
+    font-size: clamp(1.65rem, 7vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0.015em;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+    text-shadow:
+        0 0 8px rgba(210, 103, 255, 0.56),
+        0 0 24px rgba(161, 45, 218, 0.3);
+    transition:
+        opacity 520ms ease 260ms,
+        transform 650ms cubic-bezier(0.2, 0.75, 0.2, 1) 220ms;
+}
+
+body.is-finished .end-screen {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+body.is-finished .end-screen__text {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@keyframes poster-reveal {
+    from {
+        opacity: 0;
+        transform: scale(0.988);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes load-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
